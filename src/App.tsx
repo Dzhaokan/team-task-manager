@@ -1,15 +1,11 @@
-
 function App() {
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white">
-          Team Task Manager
-        </h1>
-      </div>
-    </div>
-  )
+    <main className="min-h-screen bg-white dark:bg-gray-900">
+      <h1 className="p-6 text-2xl font-semibold text-gray-900 dark:text-white">
+        Team Task Manager
+      </h1>
+    </main>
+  );
 }
 
-export default App
+export default App;
