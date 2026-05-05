@@ -1,0 +1,67 @@
+import type { Board } from '@/entities/board';
+import { SEED_BOARDS } from '@/entities/board';
+import { generateId } from '@/shared/lib/generate-id';
+
+const STORAGE_KEY = 'mock-db-v2';
+
+type DbShape = {
+  boards: Board[];
+};
+
+const seedDb = (): DbShape => ({
+  boards: [...SEED_BOARDS],
+});
+
+const loadDb = (): DbShape => {
+  if (typeof localStorage === 'undefined') return seedDb();
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return seedDb();
+  try {
+    return JSON.parse(raw) as DbShape;
+  } catch {
+    return seedDb();
+  }
+};
+
+const db: DbShape = loadDb();
+
+const saveDb = (): void => {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  } catch {
+    // ignore quota/availability issues
+  }
+};
+
+export const listBoards = (): Board[] => [...db.boards];
+
+export const findBoard = (id: string): Board | undefined =>
+  db.boards.find((b) => b.id === id);
+
+export const createBoard = (name: string): Board => {
+  const board: Board = {
+    id: generateId('b'),
+    name,
+    createdAt: new Date().toISOString(),
+  };
+  db.boards.push(board);
+  saveDb();
+  return board;
+};
+
+export const renameBoard = (id: string, name: string): Board | null => {
+  const board = db.boards.find((b) => b.id === id);
+  if (!board) return null;
+  board.name = name;
+  saveDb();
+  return board;
+};
+
+export const deleteBoard = (id: string): boolean => {
+  const i = db.boards.findIndex((b) => b.id === id);
+  if (i === -1) return false;
+  db.boards.splice(i, 1);
+  saveDb();
+  return true;
+};
