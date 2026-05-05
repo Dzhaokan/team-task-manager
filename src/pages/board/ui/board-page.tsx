@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import {
   DndContext,
@@ -27,14 +27,22 @@ export const BoardPage = () => {
   const { data: boards, isPending } = useBoards();
   const board = boards?.find((b) => b.id === boardId) ?? null;
 
-  const ensureBoardSlot = useBoardStore((s) => s.ensureBoardSlot);
   const reorderWithinColumn = useBoardStore((s) => s.reorderWithinColumn);
   const moveAcrossColumns = useBoardStore((s) => s.moveAcrossColumns);
   const [activeTaskId, setActiveTaskId] = useState<TaskId | null>(null);
+  const recentlyMovedAcross = useRef(false);
+  const columnOrderByBoard = useBoardStore((s) => s.columnOrderByBoard);
 
   useEffect(() => {
-    if (board?.id) ensureBoardSlot(board.id);
-  }, [board?.id, ensureBoardSlot]);
+    if (!board?.id) return;
+    useBoardStore.getState().ensureBoardSlot(board.id);
+  }, [board?.id]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      recentlyMovedAcross.current = false;
+    });
+  }, [columnOrderByBoard]);
 
   const pointerOptions = useMemo(
     () => ({ activationConstraint: { distance: 6 } }),
@@ -51,21 +59,24 @@ export const BoardPage = () => {
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveTaskId(String(active.id));
+    recentlyMovedAcross.current = false;
   };
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     if (!board || !over) return;
+    if (recentlyMovedAcross.current) return;
     const activeId = String(active.id);
     const overId = String(over.id);
     if (activeId === overId) return;
 
-    const { columnOrderByBoard } = useBoardStore.getState();
-    const from = findColumnContaining(board.id, activeId, columnOrderByBoard);
+    const { columnOrderByBoard: order } = useBoardStore.getState();
+    const from = findColumnContaining(board.id, activeId, order);
     const to = isColumnId(overId)
       ? overId
-      : findColumnContaining(board.id, overId, columnOrderByBoard);
+      : findColumnContaining(board.id, overId, order);
     if (!from || !to || from === to) return;
 
+    recentlyMovedAcross.current = true;
     moveAcrossColumns(
       board.id,
       activeId,
@@ -82,15 +93,18 @@ export const BoardPage = () => {
     const overId = String(over.id);
     if (activeId === overId || isColumnId(overId)) return;
 
-    const { columnOrderByBoard } = useBoardStore.getState();
-    const from = findColumnContaining(board.id, activeId, columnOrderByBoard);
-    const to = findColumnContaining(board.id, overId, columnOrderByBoard);
+    const { columnOrderByBoard: order } = useBoardStore.getState();
+    const from = findColumnContaining(board.id, activeId, order);
+    const to = findColumnContaining(board.id, overId, order);
     if (!from || from !== to) return;
 
     reorderWithinColumn(board.id, from, activeId, overId);
   };
 
-  const handleDragCancel = () => setActiveTaskId(null);
+  const handleDragCancel = () => {
+    setActiveTaskId(null);
+    recentlyMovedAcross.current = false;
+  };
 
   const activeTask = useBoardStore((s) =>
     activeTaskId ? s.tasksById[activeTaskId] : null
