@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Priority, Task } from '@/entities/task';
@@ -18,31 +18,27 @@ const PRIORITY_LABEL: Record<Priority, string> = {
   high: 'High',
 };
 
-type TaskCardProps = {
+type TaskCardViewProps = {
   task: Task;
   isOverlay?: boolean;
+  isDragging?: boolean;
   dndDisabled?: boolean;
+  innerRef?: (node: HTMLElement | null) => void;
+  style?: CSSProperties;
+  attributes?: React.HTMLAttributes<HTMLDivElement>;
+  listeners?: React.HTMLAttributes<HTMLDivElement>;
 };
 
-export const TaskCard = ({
+export const TaskCardView = ({
   task,
   isOverlay = false,
+  isDragging = false,
   dndDisabled = false,
-}: TaskCardProps) => {
-  const sortableData = useMemo(() => ({ type: 'task' }), []);
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: task.id,
-    data: sortableData,
-    disabled: dndDisabled,
-  });
-
+  innerRef,
+  style,
+  attributes,
+  listeners,
+}: TaskCardViewProps) => {
   const dragStyles = dndDisabled
     ? 'cursor-default'
     : 'cursor-grab touch-none select-none active:cursor-grabbing';
@@ -52,12 +48,7 @@ export const TaskCard = ({
     : '';
 
   return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Translate.toString(transform), transition }}
-      {...attributes}
-      {...listeners}
-    >
+    <div ref={innerRef} style={style} {...attributes} {...listeners}>
       <Card className={`${dragStyles} ${dragStateClass} ${overlayClass}`}>
         <div className="flex items-start justify-between gap-2">
           <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -88,5 +79,38 @@ export const TaskCard = ({
         </div>
       </Card>
     </div>
+  );
+};
+
+type TaskCardProps = {
+  task: Task;
+  dndDisabled?: boolean;
+};
+
+export const TaskCard = ({ task, dndDisabled = false }: TaskCardProps) => {
+  const sortableData = useMemo(() => ({ type: 'task' }), []);
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: sortableData,
+    disabled: dndDisabled,
+  });
+
+  return (
+    <TaskCardView
+      task={task}
+      isDragging={isDragging}
+      dndDisabled={dndDisabled}
+      innerRef={setNodeRef}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
+      attributes={attributes}
+      listeners={listeners}
+    />
   );
 };

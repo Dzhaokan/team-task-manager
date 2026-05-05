@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import {
   DndContext,
@@ -14,7 +14,7 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { COLUMN_DEFS } from '@/entities/board';
-import { TaskCard, type TaskId } from '@/entities/task';
+import { TaskCardView, type TaskId } from '@/entities/task';
 import { BoardColumn } from '@/widgets/board-column';
 import { useBoards } from '@/features/board-list';
 import { findColumnContaining, useBoardStore } from '@/app/store/boardStore';
@@ -36,11 +36,17 @@ export const BoardPage = () => {
     if (board?.id) ensureBoardSlot(board.id);
   }, [board?.id, ensureBoardSlot]);
 
+  const pointerOptions = useMemo(
+    () => ({ activationConstraint: { distance: 6 } }),
+    []
+  );
+  const keyboardOptions = useMemo(
+    () => ({ coordinateGetter: sortableKeyboardCoordinates }),
+    []
+  );
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(PointerSensor, pointerOptions),
+    useSensor(KeyboardSensor, keyboardOptions)
   );
 
   const handleDragStart = ({ active }: DragStartEvent) => {
@@ -136,7 +142,7 @@ export const BoardPage = () => {
         </div>
 
         <DragOverlay>
-          {activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
+          {activeTask ? <TaskCardView task={activeTask} isOverlay /> : null}
         </DragOverlay>
       </DndContext>
     </div>
