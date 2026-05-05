@@ -3,8 +3,15 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+const enableMocks = async () => {
+  const { worker } = await import('@/shared/api/mocks/browser');
+  await worker.start({ onUnhandledRequest: 'bypass' });
+};
+
+void enableMocks().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
+});
