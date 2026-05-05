@@ -1,10 +1,11 @@
-import { BoardPage } from '@/pages/board';
+import { AppProviders } from '@/app/providers';
+import { AppRouter } from '@/app/router';
 
 function App() {
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-900">
-      <BoardPage />
-    </main>
+    <AppProviders>
+      <AppRouter />
+    </AppProviders>
   );
 }
 
