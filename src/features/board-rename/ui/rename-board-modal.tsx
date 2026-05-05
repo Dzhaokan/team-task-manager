@@ -45,6 +45,7 @@ export const RenameBoardModal = ({ board, onClose }: RenameBoardModalProps) => {
           </span>
           <Input
             autoFocus
+            onFocus={(e) => e.currentTarget.select()}
             invalid={Boolean(errors.name)}
             {...register('name')}
           />
