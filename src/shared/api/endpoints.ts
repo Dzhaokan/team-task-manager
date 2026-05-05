@@ -1,5 +1,7 @@
 import type { Board } from '@/entities/board';
 
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
 class ApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -27,7 +29,7 @@ export const fetchBoards = async (): Promise<Board[]> => {
 export const postBoard = async (name: string): Promise<Board> => {
   const res = await fetch('/api/boards', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: jsonHeaders,
     body: JSON.stringify({ name }),
   });
   if (!res.ok) throw await parseError(res);
@@ -40,7 +42,7 @@ export const patchBoard = async (
 ): Promise<Board> => {
   const res = await fetch(`/api/boards/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: jsonHeaders,
     body: JSON.stringify({ name }),
   });
   if (!res.ok) throw await parseError(res);
