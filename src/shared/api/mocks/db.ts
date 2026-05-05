@@ -29,8 +29,8 @@ const saveDb = (): void => {
   if (typeof localStorage === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-  } catch {
-    // ignore quota/availability issues
+  } catch (err) {
+    console.warn('[mock-db] failed to save', err);
   }
 };
 
