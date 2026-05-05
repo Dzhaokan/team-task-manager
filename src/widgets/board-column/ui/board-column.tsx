@@ -26,10 +26,14 @@ export const BoardColumn = ({
     [boardId, columnId]
   );
   const tasks = useBoardStore(useShallow(tasksSelector));
-  const taskIds = tasks.map((t) => t.id);
+  const taskIds = useMemo(() => tasks.map((t) => t.id), [tasks]);
+  const droppableData = useMemo(
+    () => ({ type: 'column', columnId }),
+    [columnId]
+  );
   const { setNodeRef, isOver } = useDroppable({
     id: columnId,
-    data: { type: 'column', columnId },
+    data: droppableData,
   });
 
   return (

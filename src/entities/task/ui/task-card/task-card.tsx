@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Priority, Task } from '@/entities/task';
@@ -28,6 +29,7 @@ export const TaskCard = ({
   isOverlay = false,
   dndDisabled = false,
 }: TaskCardProps) => {
+  const sortableData = useMemo(() => ({ type: 'task' }), []);
   const {
     setNodeRef,
     attributes,
@@ -37,7 +39,7 @@ export const TaskCard = ({
     isDragging,
   } = useSortable({
     id: task.id,
-    data: { type: 'task' },
+    data: sortableData,
     disabled: dndDisabled,
   });
 
