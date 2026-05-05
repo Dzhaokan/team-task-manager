@@ -32,7 +32,7 @@ export const handlers = [
     const body = (await request.json().catch(() => null)) as unknown;
     const name = readName(body);
     if (!name) {
-      return errorJson('Board name is required.', 400);
+      return errorJson('Please provide a board name.', 400);
     }
     const board = createBoard(name);
     return HttpResponse.json(board, { status: 201 });
@@ -44,7 +44,7 @@ export const handlers = [
     const body = (await request.json().catch(() => null)) as unknown;
     const name = readName(body);
     if (!name) {
-      return errorJson('Board name is required.', 400);
+      return errorJson('Please provide a board name.', 400);
     }
     const board = renameBoard(id, name);
     if (!board) {
