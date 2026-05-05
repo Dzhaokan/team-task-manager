@@ -41,6 +41,7 @@ export const DeleteBoardModal = ({ board, onClose }: DeleteBoardModalProps) => {
           Cancel
         </Button>
         <Button
+          autoFocus
           variant="danger"
           onClick={handleDelete}
           disabled={mutation.isPending}
