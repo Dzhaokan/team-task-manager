@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
+const MENU_ITEM_BASE = 'block w-full px-3 py-1.5 text-left text-sm';
+const MENU_ITEM_DEFAULT =
+  'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700';
+const MENU_ITEM_DANGER =
+  'text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30';
+
 type MenuItem = {
   label: string;
   onSelect: () => void;
@@ -59,10 +65,8 @@ export const Menu = ({ trigger, items, align = 'right' }: MenuProps) => {
               role="menuitem"
               type="button"
               onClick={() => handleSelect(item)}
-              className={`block w-full px-3 py-1.5 text-left text-sm ${
-                item.variant === 'danger'
-                  ? 'text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30'
-                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700'
+              className={`${MENU_ITEM_BASE} ${
+                item.variant === 'danger' ? MENU_ITEM_DANGER : MENU_ITEM_DEFAULT
               }`}
             >
               {item.label}
