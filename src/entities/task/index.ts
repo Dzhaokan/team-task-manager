@@ -19,3 +19,4 @@ export {
   taskToFormValues,
 } from './lib/task-form';
 export { TaskCard, TaskCardView } from './ui/task-card/task-card';
+export { TaskFormFields } from './ui/task-form-fields/task-form-fields';
