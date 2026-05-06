@@ -221,7 +221,7 @@ export const selectColumnTasks =
     if (!slot) return [];
     return slot[columnId]
       .map((id) => state.tasksById[id])
-      .filter((t): t is Task => !!t);
+      .filter(Boolean) as Task[];
   };
 
 export const selectBoardTaskCount =
