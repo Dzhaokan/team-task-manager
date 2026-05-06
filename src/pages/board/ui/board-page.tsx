@@ -14,11 +14,17 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { COLUMN_DEFS } from '@/entities/board';
-import { TaskCardView, type TaskId } from '@/entities/task';
+import { TaskCardView, type Task, type TaskId } from '@/entities/task';
 import { BoardColumn } from '@/widgets/board-column';
 import { useBoards } from '@/features/board-list';
+import {
+  CreateTaskModal,
+  type CreateTaskTarget,
+} from '@/features/task-create';
+import { EditTaskModal } from '@/features/task-edit';
+import { DeleteTaskModal } from '@/features/task-delete';
 import { findColumnContaining, useBoardStore } from '@/app/store/boardStore';
-import { isColumnId } from '@/shared/config/columns';
+import { isColumnId, type ColumnId } from '@/shared/config/columns';
 import { ChevronLeftIcon } from '@/shared/ui/icon';
 import { ROUTES } from '@/app/router';
 
@@ -32,6 +38,12 @@ export const BoardPage = () => {
   const [activeTaskId, setActiveTaskId] = useState<TaskId | null>(null);
   const recentlyMovedAcross = useRef(false);
   const columnOrderByBoard = useBoardStore((s) => s.columnOrderByBoard);
+
+  const [createTarget, setCreateTarget] = useState<CreateTaskTarget | null>(
+    null
+  );
+  const [editTarget, setEditTarget] = useState<Task | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Task | null>(null);
 
   useEffect(() => {
     if (!board?.id) return;
@@ -122,6 +134,9 @@ export const BoardPage = () => {
     return <Navigate to={ROUTES.boards} replace />;
   }
 
+  const handleCreate = (columnId: ColumnId) =>
+    setCreateTarget({ boardId: board.id, columnId });
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <header className="mb-6">
@@ -151,6 +166,9 @@ export const BoardPage = () => {
               boardId={board.id}
               columnId={col.id}
               title={col.title}
+              onCreate={handleCreate}
+              onEditTask={setEditTarget}
+              onDeleteTask={setDeleteTarget}
             />
           ))}
         </div>
@@ -159,6 +177,22 @@ export const BoardPage = () => {
           {activeTask ? <TaskCardView task={activeTask} isOverlay /> : null}
         </DragOverlay>
       </DndContext>
+
+      {createTarget && (
+        <CreateTaskModal
+          target={createTarget}
+          onClose={() => setCreateTarget(null)}
+        />
+      )}
+      {editTarget && (
+        <EditTaskModal task={editTarget} onClose={() => setEditTarget(null)} />
+      )}
+      {deleteTarget && (
+        <DeleteTaskModal
+          task={deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 };

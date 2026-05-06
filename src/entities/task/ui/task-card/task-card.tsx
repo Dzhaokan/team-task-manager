@@ -1,9 +1,15 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Priority, Task } from '@/entities/task';
+import {
+  PRIORITY_SHORT_LABEL,
+  type Priority,
+  type Task,
+} from '@/entities/task';
 import { Card } from '@/shared/ui/card';
 import { Badge, type BadgeVariant } from '@/shared/ui/badge';
+import { Menu } from '@/shared/ui/menu';
+import { MoreHorizontalIcon } from '@/shared/ui/icon';
 import { formatDeadline } from '@/shared/lib/format-date';
 
 const PRIORITY_VARIANT: Record<Priority, BadgeVariant> = {
@@ -12,17 +18,13 @@ const PRIORITY_VARIANT: Record<Priority, BadgeVariant> = {
   high: 'danger',
 };
 
-const PRIORITY_LABEL: Record<Priority, string> = {
-  low: 'Low',
-  medium: 'Med',
-  high: 'High',
-};
-
 type TaskCardViewProps = {
   task: Task;
   isOverlay?: boolean;
   isDragging?: boolean;
   dndDisabled?: boolean;
+  onEdit?: (task: Task) => void;
+  onDelete?: (task: Task) => void;
   innerRef?: (node: HTMLElement | null) => void;
   style?: CSSProperties;
   attributes?: React.HTMLAttributes<HTMLDivElement>;
@@ -34,6 +36,8 @@ export const TaskCardView = ({
   isOverlay = false,
   isDragging = false,
   dndDisabled = false,
+  onEdit,
+  onDelete,
   innerRef,
   style,
   attributes,
@@ -47,6 +51,17 @@ export const TaskCardView = ({
     ? 'ring-2 ring-purple-400 shadow-lg cursor-grabbing'
     : '';
 
+  const showMenu = !isOverlay && (onEdit || onDelete);
+  const menuItems = [];
+  if (onEdit) menuItems.push({ label: 'Edit', onSelect: () => onEdit(task) });
+  if (onDelete) {
+    menuItems.push({
+      label: 'Delete',
+      variant: 'danger' as const,
+      onSelect: () => onDelete(task),
+    });
+  }
+
   return (
     <div ref={innerRef} style={style} {...attributes} {...listeners}>
       <Card
@@ -56,9 +71,31 @@ export const TaskCardView = ({
           <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
             {task.title}
           </h3>
-          <Badge variant={PRIORITY_VARIANT[task.priority]}>
-            {PRIORITY_LABEL[task.priority]}
-          </Badge>
+          <div className="flex shrink-0 items-center gap-1">
+            <Badge variant={PRIORITY_VARIANT[task.priority]}>
+              {PRIORITY_SHORT_LABEL[task.priority]}
+            </Badge>
+            {showMenu && (
+              <div
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Menu
+                  trigger={(triggerProps) => (
+                    <button
+                      type="button"
+                      aria-label="Task options"
+                      className="cursor-pointer rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+                      {...triggerProps}
+                    >
+                      <MoreHorizontalIcon />
+                    </button>
+                  )}
+                  items={menuItems}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {task.description && (
@@ -87,9 +124,16 @@ export const TaskCardView = ({
 type TaskCardProps = {
   task: Task;
   dndDisabled?: boolean;
+  onEdit?: (task: Task) => void;
+  onDelete?: (task: Task) => void;
 };
 
-export const TaskCard = ({ task, dndDisabled = false }: TaskCardProps) => {
+export const TaskCard = ({
+  task,
+  dndDisabled = false,
+  onEdit,
+  onDelete,
+}: TaskCardProps) => {
   const sortableData = useMemo(() => ({ type: 'task' }), []);
   const {
     setNodeRef,
@@ -109,6 +153,8 @@ export const TaskCard = ({ task, dndDisabled = false }: TaskCardProps) => {
       task={task}
       isDragging={isDragging}
       dndDisabled={dndDisabled}
+      onEdit={onEdit}
+      onDelete={onDelete}
       innerRef={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform), transition }}
       attributes={attributes}

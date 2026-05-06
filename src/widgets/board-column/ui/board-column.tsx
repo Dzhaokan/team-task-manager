@@ -5,21 +5,28 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useShallow } from 'zustand/react/shallow';
-import { TaskCard } from '@/entities/task';
+import { TaskCard, type Task } from '@/entities/task';
 import { selectColumnTasks, useBoardStore } from '@/app/store/boardStore';
 import type { ColumnId } from '@/shared/config/columns';
 import type { BoardId } from '@/shared/config/ids';
+import { PlusIcon } from '@/shared/ui/icon';
 
 type BoardColumnProps = {
   boardId: BoardId;
   columnId: ColumnId;
   title: string;
+  onCreate: (columnId: ColumnId) => void;
+  onEditTask: (task: Task) => void;
+  onDeleteTask: (task: Task) => void;
 };
 
 export const BoardColumn = ({
   boardId,
   columnId,
   title,
+  onCreate,
+  onEditTask,
+  onDeleteTask,
 }: BoardColumnProps) => {
   const tasksSelector = useMemo(
     () => selectColumnTasks(boardId, columnId),
@@ -46,13 +53,19 @@ export const BoardColumn = ({
           {tasks.length}
         </span>
       </header>
+
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <div
           ref={setNodeRef}
           className={`flex min-h-32 flex-col gap-2 rounded-xl p-1 transition-colors ${isOver ? 'bg-purple-100/60 dark:bg-purple-900/20' : ''}`}
         >
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              onEdit={onEditTask}
+              onDelete={onDeleteTask}
+            />
           ))}
           {tasks.length === 0 && (
             <p className="px-2 py-6 text-center text-xs text-gray-400 dark:text-gray-500">
@@ -61,6 +74,14 @@ export const BoardColumn = ({
           )}
         </div>
       </SortableContext>
+
+      <button
+        type="button"
+        onClick={() => onCreate(columnId)}
+        className="mt-2 inline-flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-xs text-gray-500 hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+      >
+        <PlusIcon /> Add task
+      </button>
     </section>
   );
 };
