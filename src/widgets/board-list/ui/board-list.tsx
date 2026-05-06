@@ -5,10 +5,6 @@ import { RenameBoardModal } from '@/features/board-rename';
 import { DeleteBoardModal } from '@/features/board-delete';
 import { BoardCard } from './board-card';
 
-const SkeletonCard = () => (
-  <div className="h-20 animate-pulse rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800" />
-);
-
 export const BoardList = () => {
   const { data, isPending, isError, error, refetch } = useBoards();
   const [renameTarget, setRenameTarget] = useState<Board | null>(null);
@@ -17,9 +13,12 @@ export const BoardList = () => {
   if (isPending) {
     return (
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <SkeletonCard />
-        <SkeletonCard />
-        <SkeletonCard />
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="h-20 animate-pulse rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
+          />
+        ))}
       </div>
     );
   }
