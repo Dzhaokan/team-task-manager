@@ -41,10 +41,11 @@ type Actions = {
   deleteTask: (taskId: TaskId) => void;
 };
 
-const emptyColumnSlot = (): ColumnSlot =>
-  Object.fromEntries(
-    COLUMN_IDS.map((col) => [col, [] as TaskId[]])
-  ) as unknown as ColumnSlot;
+const emptyColumnSlot = (): ColumnSlot => ({
+  todo: [],
+  'in-progress': [],
+  done: [],
+});
 
 const buildInitialState = (): State => {
   const tasksById: Record<TaskId, Task> = {};
@@ -189,12 +190,11 @@ export const useBoardStore = create<State & Actions>()(
           }
           const slot = state.columnOrderByBoard[task.boardId];
           if (!slot) return { tasksById: remaining };
-          const nextSlot = Object.fromEntries(
-            COLUMN_IDS.map((col) => [
-              col,
-              slot[col].filter((id) => id !== taskId),
-            ])
-          ) as unknown as ColumnSlot;
+          const nextSlot: ColumnSlot = {
+            todo: slot.todo.filter((id) => id !== taskId),
+            'in-progress': slot['in-progress'].filter((id) => id !== taskId),
+            done: slot.done.filter((id) => id !== taskId),
+          };
           return {
             tasksById: remaining,
             columnOrderByBoard: {
