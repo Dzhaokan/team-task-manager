@@ -3,6 +3,7 @@ import type { Board } from '@/entities/board';
 import { useBoards } from '@/features/board-list';
 import { RenameBoardModal } from '@/features/board-rename';
 import { DeleteBoardModal } from '@/features/board-delete';
+import { errorMessage } from '@/shared/lib/error-message';
 import { BoardCard } from './board-card';
 
 export const BoardList = () => {
@@ -28,7 +29,7 @@ export const BoardList = () => {
       <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200">
         <p className="font-medium">Could not load boards.</p>
         <p className="mt-1 opacity-80">
-          {error instanceof Error ? error.message : 'Unexpected error'}
+          {errorMessage(error, 'Unexpected error')}
         </p>
         <button
           type="button"
