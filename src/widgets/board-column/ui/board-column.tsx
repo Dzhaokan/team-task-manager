@@ -69,7 +69,7 @@ export const BoardColumn = ({
           ))}
           {tasks.length === 0 && (
             <p className="px-2 py-6 text-center text-xs text-gray-400 dark:text-gray-500">
-              Drop tasks here
+              No tasks yet
             </p>
           )}
         </div>
