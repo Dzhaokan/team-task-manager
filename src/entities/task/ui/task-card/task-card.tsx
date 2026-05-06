@@ -49,7 +49,9 @@ export const TaskCardView = ({
 
   return (
     <div ref={innerRef} style={style} {...attributes} {...listeners}>
-      <Card className={`${dragStyles} ${dragStateClass} ${overlayClass}`}>
+      <Card
+        className={`transition-shadow hover:shadow-md ${dragStyles} ${dragStateClass} ${overlayClass}`}
+      >
         <div className="flex items-start justify-between gap-2">
           <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
             {task.title}
