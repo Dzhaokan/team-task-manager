@@ -30,7 +30,7 @@ const saveDb = (): void => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
   } catch (err) {
-    console.warn('[mock-db] failed to save', err);
+    console.warn('failed to save db', err);
   }
 };
 
