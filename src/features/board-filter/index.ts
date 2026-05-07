@@ -1,3 +1,4 @@
+export { BoardFilterBar } from './ui/board-filter-bar';
 export { useBoardFilter } from './lib/use-board-filter';
 export { matchesFilter } from './lib/match-task';
 export { isFilterActive, EMPTY_FILTER } from './model/types';
