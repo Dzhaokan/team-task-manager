@@ -16,18 +16,18 @@ const isPriority = (value: string): value is Priority =>
 const isAuthor = (value: string): value is AuthorFilterValue =>
   AUTHOR_SET.has(value);
 
-const uniq = <T>(values: T[]): T[] => Array.from(new Set(values));
+const dedupe = <T>(values: T[]): T[] => Array.from(new Set(values));
 
 export const parseFilterFromParams = (params: URLSearchParams): BoardFilter => {
   const q = params.get('q')?.trim() ?? '';
-  const priorities = uniq(params.getAll('priority').filter(isPriority));
-  const tags = uniq(
+  const priorities = dedupe(params.getAll('priority').filter(isPriority));
+  const tags = dedupe(
     params
       .getAll('tag')
       .map((t) => t.trim())
       .filter((t) => t.length > 0)
   );
-  const authors = uniq(params.getAll('author').filter(isAuthor));
+  const authors = dedupe(params.getAll('author').filter(isAuthor));
   return { q, priorities, tags, authors };
 };
 
