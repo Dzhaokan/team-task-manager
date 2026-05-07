@@ -86,7 +86,7 @@ export const BoardPage = () => {
   };
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
-    if (!board || !over) return;
+    if (!board || !over || isFilterActive) return;
     if (recentlyMovedAcross.current) return;
     const activeId = String(active.id);
     const overId = String(over.id);
@@ -111,7 +111,7 @@ export const BoardPage = () => {
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveTaskId(null);
-    if (!board || !over) return;
+    if (!board || !over || isFilterActive) return;
     const activeId = String(active.id);
     const overId = String(over.id);
     if (activeId === overId || isColumnId(overId)) return;
