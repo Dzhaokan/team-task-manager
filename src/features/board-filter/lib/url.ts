@@ -2,6 +2,7 @@ import { PRIORITIES, type Priority } from '@/entities/task';
 import { NO_AUTHOR, USERS, type AuthorFilterValue } from '@/entities/user';
 import { EMPTY_FILTER, type BoardFilter } from '../model/types';
 
+// keys we own in the URL (other params are preserved on write)
 const PARAM_KEYS = ['q', 'priority', 'tag', 'author'] as const;
 
 const PRIORITY_SET: ReadonlySet<string> = new Set<Priority>(PRIORITIES);
