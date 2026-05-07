@@ -46,7 +46,7 @@ export const BoardFilterBar = ({ boardId }: BoardFilterBarProps) => {
       aria-label="Filter tasks"
       className="mt-4 flex flex-col gap-2 rounded-xl border border-gray-200 bg-white/60 p-3 backdrop-blur dark:border-gray-700 dark:bg-gray-900/60"
     >
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <div className="relative min-w-[12rem] flex-1">
           <span
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
