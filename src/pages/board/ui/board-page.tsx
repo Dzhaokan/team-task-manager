@@ -23,6 +23,11 @@ import {
 } from '@/features/task-create';
 import { EditTaskModal } from '@/features/task-edit';
 import { DeleteTaskModal } from '@/features/task-delete';
+import {
+  BoardFilterBar,
+  matchesFilter,
+  useBoardFilter,
+} from '@/features/board-filter';
 import { findColumnContaining, useBoardStore } from '@/app/store/boardStore';
 import { isColumnId, type ColumnId } from '@/shared/config/columns';
 import { ChevronLeftIcon } from '@/shared/ui/icon';
@@ -44,6 +49,12 @@ export const BoardPage = () => {
   );
   const [editTarget, setEditTarget] = useState<Task | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Task | null>(null);
+
+  const { filter, isActive: isFilterActive } = useBoardFilter();
+  const predicate = useMemo(
+    () => (task: Task) => matchesFilter(task, filter),
+    [filter]
+  );
 
   useEffect(() => {
     if (!board?.id) return;
@@ -149,6 +160,7 @@ export const BoardPage = () => {
         <h1 className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
           {board.name}
         </h1>
+        <BoardFilterBar boardId={board.id} />
       </header>
 
       <DndContext
@@ -166,6 +178,7 @@ export const BoardPage = () => {
               boardId={board.id}
               columnId={col.id}
               title={col.title}
+              predicate={isFilterActive ? predicate : undefined}
               onCreate={handleCreate}
               onEditTask={setEditTarget}
               onDeleteTask={setDeleteTarget}
