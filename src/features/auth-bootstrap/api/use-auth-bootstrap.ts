@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AUTH_ME_QUERY_KEY, getAuthMe } from '@/shared/api';
+import { ApiError, AUTH_ME_QUERY_KEY, getAuthMe } from '@/shared/api';
 import { selectToken, useAuthStore } from '@/app/store/authStore';
 
 export const useAuthBootstrap = () => {
@@ -18,4 +18,11 @@ export const useAuthBootstrap = () => {
     if (!token || !query.data) return;
     useAuthStore.getState().setSession(token, query.data);
   }, [token, query.data]);
+
+  useEffect(() => {
+    if (!token) return;
+    if (query.error instanceof ApiError && query.error.status === 401) {
+      useAuthStore.getState().clear();
+    }
+  }, [token, query.error]);
 };
