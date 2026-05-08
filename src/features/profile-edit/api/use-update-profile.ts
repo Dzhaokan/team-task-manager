@@ -6,7 +6,11 @@ type ProfilePatch = { name?: string; avatar?: string | null };
 
 export const useUpdateProfile = () =>
   useMutation({
-    mutationFn: (patch: ProfilePatch) => patchUserMe(patch),
+    mutationFn: (patch: ProfilePatch) =>
+      patchUserMe({
+        ...patch,
+        ...(patch.name !== undefined ? { name: patch.name.trim() } : {}),
+      }),
     onSuccess: (user) => {
       useAuthStore.getState().updateUser({
         name: user.name,
