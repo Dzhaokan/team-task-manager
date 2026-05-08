@@ -21,7 +21,7 @@ export const RegisterForm = () => {
   const onSubmit = handleSubmit((values) => mutation.mutate(values));
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-3">
+    <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
       <label className="flex flex-col gap-1.5">
         <span className="text-sm text-gray-700 dark:text-gray-300">Name</span>
         <Input
