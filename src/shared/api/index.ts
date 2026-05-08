@@ -1,16 +1,16 @@
+export { getAuthToken, setAuthTokenGetter } from './auth-token';
 export { queryClient } from './client';
-export { setAuthTokenGetter, getAuthToken } from './auth-token';
 export {
-  fetchBoards,
-  postBoard,
-  patchBoard,
-  deleteBoardRequest,
-  postLogin,
-  postRegister,
-  postLogout,
-  getAuthMe,
-  patchUserMe,
   ApiError,
+  deleteBoardRequest,
+  fetchBoards,
+  getAuthMe,
+  patchBoard,
+  patchUserMe,
+  postBoard,
+  postLogin,
+  postLogout,
+  postRegister,
   type AuthSession,
 } from './endpoints';
-export { BOARDS_QUERY_KEY, AUTH_ME_QUERY_KEY } from './keys';
+export { AUTH_ME_QUERY_KEY, BOARDS_QUERY_KEY } from './keys';
