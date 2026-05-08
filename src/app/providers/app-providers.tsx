@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/shared/api';
+import { AuthProvider } from './auth-provider';
 
 type AppProvidersProps = {
   children: ReactNode;
 };
 
 export const AppProviders = ({ children }: AppProvidersProps) => (
-  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>{children}</AuthProvider>
+  </QueryClientProvider>
 );
