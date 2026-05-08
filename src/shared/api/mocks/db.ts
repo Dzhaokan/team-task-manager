@@ -88,8 +88,10 @@ export const deleteBoard = (id: string): boolean => {
 
 export const tokenForUser = (id: string): string => `tok-${id}`;
 
-const findRecordByEmail = (email: string): UserRecord | undefined =>
-  db.users.find((u) => u.email === email.toLowerCase());
+const findRecordByEmail = (email: string): UserRecord | undefined => {
+  const needle = email.trim().toLowerCase();
+  return db.users.find((u) => u.email === needle);
+};
 
 export const findUserByEmail = (email: string): User | null => {
   const record = findRecordByEmail(email);
