@@ -6,3 +6,5 @@ export type {
 } from './model/types';
 export { NO_AUTHOR } from './model/types';
 export { USERS } from './model/seed';
+export { getInitials } from './lib/initials';
+export { Avatar, type AvatarSize } from './ui/avatar';
