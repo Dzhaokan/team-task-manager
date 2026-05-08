@@ -21,7 +21,7 @@ export const Avatar = ({
   size = 'md',
   className,
 }: AvatarProps) => {
-  const base = `inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold uppercase ${SIZE_STYLES[size]} ${className ?? ''}`;
+  const base = `inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold uppercase ring-1 ring-transparent transition-shadow hover:ring-purple-300/40 ${SIZE_STYLES[size]} ${className ?? ''}`;
 
   if (src) {
     return (
