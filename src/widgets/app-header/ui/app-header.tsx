@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { selectCurrentUser, useAuthStore } from '@/app/store/authStore';
 import { ROUTES } from '@/app/router';
+import { ThemeToggle } from '@/features/theme-toggle';
 import { UserMenu } from './user-menu';
 
 export const AppHeader = () => {
@@ -16,6 +17,7 @@ export const AppHeader = () => {
           Team Task Manager
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           {user && <UserMenu user={user} />}
         </div>
       </div>
