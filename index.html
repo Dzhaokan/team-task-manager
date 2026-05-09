@@ -5,6 +5,30 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>team-task-manager</title>
+    <script>
+      // Pre-paint theme: avoids a flash of wrong theme on first load.
+      // Storage key must stay in sync with THEME_STORAGE_KEY in
+      // src/shared/config/theme.ts.
+      (function () {
+        try {
+          var raw = localStorage.getItem('theme-store-v1');
+          var mode = 'system';
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.state && parsed.state.mode) {
+              mode = parsed.state.mode;
+            }
+          }
+          var dark =
+            mode === 'dark' ||
+            (mode === 'system' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (_) {
+          /* ignore */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
