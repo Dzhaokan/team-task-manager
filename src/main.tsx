@@ -8,7 +8,6 @@ import { useAuthStore } from '@/app/store/authStore';
 setAuthTokenGetter(() => useAuthStore.getState().token);
 
 const enableMocks = async () => {
-  if (!import.meta.env.DEV) return;
   const { worker } = await import('@/shared/api/mocks/browser');
   await worker.start({ onUnhandledRequest: 'bypass' });
 };

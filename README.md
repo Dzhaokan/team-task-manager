@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# team-task-manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Небольшой kanban-таск-менеджер для личных и домашних дел, разнесённых по нескольким доскам. SPA на фронте, бэкенд замокан.
 
-Currently, two official plugins are available:
+## Стек
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 18 + TypeScript
+- Vite
+- React Router v7
+- TanStack Query (серверное состояние) + Zustand (клиентское состояние)
+- React Hook Form + Zod
+- Tailwind CSS v4
+- @dnd-kit для drag-and-drop
+- MSW для мокового бэкенда (данные хранятся в `localStorage`)
 
-## React Compiler
+Структура проекта построена по [Feature-Sliced Design](https://feature-sliced.design/). Послойный разбор — в [architecture.md](architecture.md).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Запуск
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+При первой загрузке MSW регистрирует service worker и засеивает моковую БД в `localStorage`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Тестовые аккаунты
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+В сидах два пользователя, пароль у обоих одинаковый:
+
+- `anna@home.local` / `password123`
+- `mike@home.local` / `password123`
+
+Можно зарегистрировать и новый аккаунт — он точно так же ляжет в `localStorage`.
+
+## Скрипты
+
+| Скрипт | Что делает |
+| --- | --- |
+| `npm run dev` | Vite dev server c HMR |
+| `npm run build` | Тайпчек и продовый бандл в `dist/` |
+| `npm run preview` | Локально поднимает собранный бандл |
+| `npm run lint` | ESLint по проекту |
+| `npm run format` | Prettier write |
+
+## Моковый бэкенд
+
+Реального сервера нет. Все вызовы `/api/*` перехватывает MSW и обрабатывает поверх небольшой in-memory БД, которая зеркалится в `localStorage`. Воркер работает и в dev, и в проде — задеплоенное приложение полностью функционально и изолированно по браузерам.
+
+Если очистить данные сайта, моковая БД пересоздаётся при следующей загрузке.
+
+## Деплой
+
+В репозитории лежит [`netlify.toml`](netlify.toml) с командой сборки, publish dir (`dist`), версией Node и SPA fallback редиректом. Достаточно подключить репо к Netlify — конфиг подхватится сам.
