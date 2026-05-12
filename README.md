@@ -51,4 +51,4 @@ npm run dev
 
 ## Деплой
 
-В репозитории лежит [`netlify.toml`](netlify.toml) с командой сборки, publish dir (`dist`), версией Node и SPA fallback редиректом. Достаточно подключить репо к Netlify — конфиг подхватится сам.
+В репозитории лежит [`netlify.toml`](netlify.toml) с командой сборки, publish dir (`dist`), версией Node и SPA fallback редиректом. (https://team-task-managerqnt.netlify.app)

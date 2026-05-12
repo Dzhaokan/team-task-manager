@@ -20,7 +20,7 @@ const isAuthor = (value: string): value is AuthorFilterValue =>
 const dedupe = <T>(values: T[]): T[] => Array.from(new Set(values));
 
 export const parseFilterFromParams = (params: URLSearchParams): BoardFilter => {
-  const q = params.get('q')?.trim() ?? '';
+  const q = params.get('q') ?? '';
   const priorities = dedupe(params.getAll('priority').filter(isPriority));
   const tags = dedupe(
     params
@@ -39,7 +39,7 @@ export const writeFilterToParams = (
   const next = new URLSearchParams(base);
   for (const key of PARAM_KEYS) next.delete(key);
 
-  if (filter.q.trim()) next.set('q', filter.q.trim());
+  if (filter.q.trim()) next.set('q', filter.q);
   for (const p of filter.priorities) next.append('priority', p);
   for (const t of filter.tags) next.append('tag', t);
   for (const a of filter.authors) next.append('author', a);
